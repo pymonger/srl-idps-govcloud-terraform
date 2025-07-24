@@ -362,21 +362,34 @@ resource "helm_release" "airflow" {
           size             = "100Gi"
           storageClassName = "gp2"
         }
-        extraVolumes = [
+        extraVolumes = concat([
           {
             name = "workers-volume"
             persistentVolumeClaim = {
               claimName = "airflow-kpo"
             }
           }
-        ]
-        extraVolumeMounts = [
+          ], var.deploy_dags ? [
+          {
+            name = "dag-configmaps"
+            configMap = {
+              name = "airflow-dag-configmaps"
+            }
+          }
+        ] : [])
+        extraVolumeMounts = concat([
           {
             name      = "workers-volume"
             mountPath = "/shared-task-data"
             readOnly  = false
           }
-        ]
+          ], var.deploy_dags ? [
+          {
+            name      = "dag-configmaps"
+            mountPath = "/opt/airflow/dags"
+            readOnly  = true
+          }
+        ] : [])
       }
 
       webserver = {
@@ -390,6 +403,21 @@ resource "helm_release" "airflow" {
             memory = "2Gi"
           }
         }
+        extraVolumeMounts = var.deploy_dags ? [
+          {
+            name      = "dag-configmaps"
+            mountPath = "/opt/airflow/dags"
+            readOnly  = true
+          }
+        ] : []
+        extraVolumes = var.deploy_dags ? [
+          {
+            name = "dag-configmaps"
+            configMap = {
+              name = "airflow-dag-configmaps"
+            }
+          }
+        ] : []
       }
 
       dagProcessor = {
@@ -404,6 +432,21 @@ resource "helm_release" "airflow" {
             memory = "2Gi"
           }
         }
+        extraVolumeMounts = var.deploy_dags ? [
+          {
+            name      = "dag-configmaps"
+            mountPath = "/opt/airflow/dags"
+            readOnly  = true
+          }
+        ] : []
+        extraVolumes = var.deploy_dags ? [
+          {
+            name = "dag-configmaps"
+            configMap = {
+              name = "airflow-dag-configmaps"
+            }
+          }
+        ] : []
       }
 
       scheduler = {
@@ -417,6 +460,21 @@ resource "helm_release" "airflow" {
             memory = "2Gi"
           }
         }
+        extraVolumeMounts = var.deploy_dags ? [
+          {
+            name      = "dag-configmaps"
+            mountPath = "/opt/airflow/dags"
+            readOnly  = true
+          }
+        ] : []
+        extraVolumes = var.deploy_dags ? [
+          {
+            name = "dag-configmaps"
+            configMap = {
+              name = "airflow-dag-configmaps"
+            }
+          }
+        ] : []
       }
 
       postgresql = {
@@ -594,3 +652,26 @@ resource "helm_release" "airflow" {
 # Data sources
 data "aws_caller_identity" "current" {}
 data "aws_region" "current" {}
+
+# Combined DAG ConfigMap for Airflow
+resource "kubernetes_config_map_v1" "airflow_dags" {
+  count = var.deploy_dags ? 1 : 0
+
+  metadata {
+    name      = "airflow-dag-configmaps"
+    namespace = "sps"
+    labels = {
+      "app.kubernetes.io/name"      = "airflow"
+      "app.kubernetes.io/instance"  = "airflow"
+      "app.kubernetes.io/component" = "dag"
+    }
+  }
+
+  data = {
+    "rdrgen.py"  = file("${path.module}/dags/rdrgen.py")
+    "edrgen.py"  = file("${path.module}/dags/edrgen.py")
+    "vic2png.py" = file("${path.module}/dags/vic2png.py")
+  }
+
+  depends_on = [helm_release.airflow]
+}

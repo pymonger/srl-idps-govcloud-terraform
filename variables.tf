@@ -46,6 +46,12 @@ variable "node_group_instance_types" {
   default     = ["t3.medium"]
 }
 
+variable "deploy_dags" {
+  description = "Whether to deploy the default DAGs (rdrgen, edrgen, vic2png) to Airflow"
+  type        = bool
+  default     = true
+}
+
 variable "tags" {
   description = "Tags to apply to all resources"
   type        = map(string)

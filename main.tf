@@ -135,5 +135,6 @@ module "kubernetes" {
   karpenter_controller_role_arn        = module.iam.karpenter_controller_role_arn
   karpenter_node_instance_profile_name = module.iam.karpenter_node_instance_profile_name
   karpenter_node_role_arn              = module.iam.karpenter_node_role_arn
+  deploy_dags                          = var.deploy_dags
   tags                                 = var.tags
 }

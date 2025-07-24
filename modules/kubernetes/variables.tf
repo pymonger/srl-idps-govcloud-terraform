@@ -23,6 +23,11 @@ variable "karpenter_node_role_arn" {
   type        = string
 }
 
+variable "deploy_dags" {
+  description = "Whether to deploy the default DAGs (rdrgen, edrgen, vic2png)"
+  type        = bool
+  default     = true
+}
 
 variable "tags" {
   description = "Tags to apply to all resources"

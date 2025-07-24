@@ -17,6 +17,10 @@ terraform {
       source  = "hashicorp/kubernetes"
       version = "~> 2.25"
     }
+    null = {
+      source  = "hashicorp/null"
+      version = "~> 3.0"
+    }
   }
 }
 
@@ -24,16 +28,40 @@ terraform {
 data "aws_caller_identity" "current" {}
 data "aws_region" "current" {}
 
-# VPC Module
-module "vpc" {
-  source = "./modules/vpc"
+# Data source for existing VPC (using tags to find the appropriate VPC)
+data "aws_vpc" "existing" {
+  tags = {
+    "JplVpcType" = "TGW-Internal"
+  }
+}
 
-  cluster_name         = var.cluster_name
-  vpc_cidr             = var.vpc_cidr
-  public_subnet_cidrs  = var.public_subnet_cidrs
-  private_subnet_cidrs = var.private_subnet_cidrs
-  availability_zones   = var.availability_zones
-  tags                 = var.tags
+# Data sources for existing private subnets
+data "aws_subnets" "private" {
+  filter {
+    name   = "vpc-id"
+    values = [data.aws_vpc.existing.id]
+  }
+
+  filter {
+    name   = "tag:karpenter.sh/discovery"
+    values = ["gman-test"]
+  }
+}
+
+# Validation to ensure subnets with karpenter.sh/discovery tag are found
+locals {
+  subnet_count = length(data.aws_subnets.private.ids)
+}
+
+resource "null_resource" "validate_subnets" {
+  count = local.subnet_count == 0 ? 1 : 0
+
+  lifecycle {
+    precondition {
+      condition     = local.subnet_count > 0
+      error_message = "No subnets found with tag karpenter.sh/discovery = gman-test in VPC ${data.aws_vpc.existing.id}"
+    }
+  }
 }
 
 # SQS Module
@@ -57,8 +85,8 @@ module "efs" {
   source = "./modules/efs"
 
   cluster_name               = var.cluster_name
-  vpc_id                     = module.vpc.vpc_id
-  private_subnet_ids         = module.vpc.private_subnet_ids
+  vpc_id                     = data.aws_vpc.existing.id
+  private_subnet_ids         = data.aws_subnets.private.ids
   eks_node_security_group_id = module.eks.node_security_group_id
   tags                       = var.tags
 }
@@ -79,8 +107,8 @@ module "eks" {
 
   cluster_name              = var.cluster_name
   kubernetes_version        = var.kubernetes_version
-  vpc_id                    = module.vpc.vpc_id
-  private_subnet_ids        = module.vpc.private_subnet_ids
+  vpc_id                    = data.aws_vpc.existing.id
+  private_subnet_ids        = data.aws_subnets.private.ids
   public_access_cidrs       = var.public_access_cidrs
   service_ipv4_cidr         = var.service_ipv4_cidr
   cluster_role_arn          = module.iam.cluster_role_arn

@@ -38,6 +38,30 @@ The infrastructure is organized into modular components:
 - SQS queues
 - ECR repositories
 
+### Required VPC Configuration ⚠️
+
+**CRITICAL**: This Terraform configuration requires an existing VPC with specific configuration:
+
+**VPC Requirements:**
+- **VPC Tag**: Must have tag `JplVpcType = "TGW-Internal"`
+- **DNS Settings**: Both `enableDnsSupport` and `enableDnsHostnames` must be enabled
+- **Subnet Tags**: Private subnets must have tag `karpenter.sh/discovery = "<cluster-name>"` (replace with your actual cluster name)
+
+**Verification Commands:**
+```bash
+# Verify VPC exists with correct tag
+aws ec2 describe-vpcs --filters "Name=tag:JplVpcType,Values=TGW-Internal" --region us-gov-west-1
+
+# Get VPC ID from the above command output, then verify VPC DNS settings
+VPC_ID=$(aws ec2 describe-vpcs --filters "Name=tag:JplVpcType,Values=TGW-Internal" --query 'Vpcs[0].VpcId' --output text --region us-gov-west-1)
+aws ec2 describe-vpc-attribute --vpc-id $VPC_ID --attribute enableDnsSupport --region us-gov-west-1
+aws ec2 describe-vpc-attribute --vpc-id $VPC_ID --attribute enableDnsHostnames --region us-gov-west-1
+
+# Verify subnets have Karpenter discovery tags (replace CLUSTER_NAME with your actual cluster name)
+CLUSTER_NAME="your-cluster-name"
+aws ec2 describe-subnets --filters "Name=vpc-id,Values=$VPC_ID" "Name=tag:karpenter.sh/discovery,Values=$CLUSTER_NAME" --region us-gov-west-1
+```
+
 ### Administrative Requirements ⚠️
 
 **CRITICAL**: Before running this Terraform configuration, your AWS GovCloud administrators must deploy the JPL IAM as Code CloudFormation stack:
@@ -99,6 +123,18 @@ Before deployment, mirror all required images to ECR:
 # Ensure CloudFormation stack is deployed
 aws cloudformation list-stacks --region us-gov-west-1 \
   --query 'StackSummaries[?contains(StackName, `StackSet-jpl-roles-as-code`) && StackStatus==`CREATE_COMPLETE`]'
+
+# Verify VPC exists and get its ID
+aws ec2 describe-vpcs --filters "Name=tag:JplVpcType,Values=TGW-Internal" --region us-gov-west-1
+
+# Get VPC ID and verify DNS settings are enabled (required for EKS)
+VPC_ID=$(aws ec2 describe-vpcs --filters "Name=tag:JplVpcType,Values=TGW-Internal" --query 'Vpcs[0].VpcId' --output text --region us-gov-west-1)
+aws ec2 describe-vpc-attribute --vpc-id $VPC_ID --attribute enableDnsSupport --region us-gov-west-1
+aws ec2 describe-vpc-attribute --vpc-id $VPC_ID --attribute enableDnsHostnames --region us-gov-west-1
+
+# Verify subnets have required Karpenter discovery tags (replace CLUSTER_NAME with your actual cluster name)
+CLUSTER_NAME="your-cluster-name"
+aws ec2 describe-subnets --filters "Name=vpc-id,Values=$VPC_ID" "Name=tag:karpenter.sh/discovery,Values=$CLUSTER_NAME" --region us-gov-west-1
 ```
 
 ### 2. Mirror Images (GovCloud Requirement)
@@ -292,6 +328,7 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 | <a name="requirement_aws"></a> [aws](#requirement\_aws) | ~> 5.0 |
 | <a name="requirement_helm"></a> [helm](#requirement\_helm) | ~> 2.12 |
 | <a name="requirement_kubernetes"></a> [kubernetes](#requirement\_kubernetes) | ~> 2.25 |
+| <a name="requirement_null"></a> [null](#requirement\_null) | ~> 3.0 |
 | <a name="requirement_tls"></a> [tls](#requirement\_tls) | ~> 4.0 |
 
 ## Providers
@@ -299,6 +336,7 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 | Name | Version |
 |------|---------|
 | <a name="provider_aws"></a> [aws](#provider\_aws) | 5.100.0 |
+| <a name="provider_null"></a> [null](#provider\_null) | 3.2.4 |
 
 ## Modules
 
@@ -310,32 +348,30 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 | <a name="module_iam"></a> [iam](#module\_iam) | ./modules/iam | n/a |
 | <a name="module_kubernetes"></a> [kubernetes](#module\_kubernetes) | ./modules/kubernetes | n/a |
 | <a name="module_sqs"></a> [sqs](#module\_sqs) | ./modules/sqs | n/a |
-| <a name="module_vpc"></a> [vpc](#module\_vpc) | ./modules/vpc | n/a |
 
 ## Resources
 
 | Name | Type |
 |------|------|
+| [null_resource.validate_subnets](https://registry.terraform.io/providers/hashicorp/null/latest/docs/resources/resource) | resource |
 | [aws_caller_identity.current](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/caller_identity) | data source |
 | [aws_region.current](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/region) | data source |
+| [aws_subnets.private](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/subnets) | data source |
+| [aws_vpc.existing](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/vpc) | data source |
 
 ## Inputs
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
-| <a name="input_availability_zones"></a> [availability\_zones](#input\_availability\_zones) | Availability zones for subnets | `list(string)` | <pre>[<br/>  "us-gov-west-1a",<br/>  "us-gov-west-1b",<br/>  "us-gov-west-1c"<br/>]</pre> | no |
 | <a name="input_cluster_name"></a> [cluster\_name](#input\_cluster\_name) | Name of the EKS cluster | `string` | `"gman-test"` | no |
 | <a name="input_kubernetes_version"></a> [kubernetes\_version](#input\_kubernetes\_version) | Kubernetes version for the EKS cluster | `string` | `"1.32"` | no |
 | <a name="input_node_group_desired_size"></a> [node\_group\_desired\_size](#input\_node\_group\_desired\_size) | Desired number of nodes in the node group | `number` | `4` | no |
 | <a name="input_node_group_instance_types"></a> [node\_group\_instance\_types](#input\_node\_group\_instance\_types) | Instance types for the node group | `list(string)` | <pre>[<br/>  "t3.medium"<br/>]</pre> | no |
 | <a name="input_node_group_max_size"></a> [node\_group\_max\_size](#input\_node\_group\_max\_size) | Maximum number of nodes in the node group | `number` | `4` | no |
 | <a name="input_node_group_min_size"></a> [node\_group\_min\_size](#input\_node\_group\_min\_size) | Minimum number of nodes in the node group | `number` | `0` | no |
-| <a name="input_private_subnet_cidrs"></a> [private\_subnet\_cidrs](#input\_private\_subnet\_cidrs) | CIDR blocks for private subnets | `list(string)` | <pre>[<br/>  "10.0.11.0/24",<br/>  "10.0.12.0/24",<br/>  "10.0.13.0/24"<br/>]</pre> | no |
 | <a name="input_public_access_cidrs"></a> [public\_access\_cidrs](#input\_public\_access\_cidrs) | CIDR blocks for public access to EKS cluster | `list(string)` | <pre>[<br/>  "0.0.0.0/0"<br/>]</pre> | no |
-| <a name="input_public_subnet_cidrs"></a> [public\_subnet\_cidrs](#input\_public\_subnet\_cidrs) | CIDR blocks for public subnets | `list(string)` | <pre>[<br/>  "10.0.1.0/24",<br/>  "10.0.2.0/24",<br/>  "10.0.3.0/24"<br/>]</pre> | no |
 | <a name="input_service_ipv4_cidr"></a> [service\_ipv4\_cidr](#input\_service\_ipv4\_cidr) | CIDR block for Kubernetes services | `string` | `"10.100.0.0/16"` | no |
 | <a name="input_tags"></a> [tags](#input\_tags) | Tags to apply to all resources | `map(string)` | <pre>{<br/>  "Environment": "gman-test",<br/>  "ManagedBy": "terraform",<br/>  "Owner": "account-managed"<br/>}</pre> | no |
-| <a name="input_vpc_cidr"></a> [vpc\_cidr](#input\_vpc\_cidr) | CIDR block for the VPC | `string` | `"10.0.0.0/16"` | no |
 
 ## Outputs
 

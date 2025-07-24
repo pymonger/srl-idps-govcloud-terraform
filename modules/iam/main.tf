@@ -1,6 +1,6 @@
 # EKS Cluster IAM Role
 resource "aws_iam_role" "eks_cluster_role" {
-  name = "${var.cluster_name}-cluster-role"
+  name = "am-${var.cluster_name}-cluster-role"
 
   assume_role_policy = jsonencode({
     Version = "2012-10-17"
@@ -31,7 +31,7 @@ resource "aws_iam_role_policy_attachment" "eks_cni_policy" {
 
 # EKS Node Group IAM Role
 resource "aws_iam_role" "eks_node_role" {
-  name = "${var.cluster_name}-node-role"
+  name = "am-${var.cluster_name}-node-role"
 
   assume_role_policy = jsonencode({
     Version = "2012-10-17"
@@ -82,7 +82,7 @@ resource "aws_iam_role_policy_attachment" "efs_csi_driver_policy" {
 
 # Karpenter Controller IAM Role
 resource "aws_iam_role" "karpenter_controller_role" {
-  name = "${var.cluster_name}-karpenter-controller-role"
+  name = "am-${var.cluster_name}-karpenter-controller-role"
 
   assume_role_policy = jsonencode({
     Version = "2012-10-17"
@@ -107,7 +107,7 @@ resource "aws_iam_role" "karpenter_controller_role" {
 
 # Karpenter Controller Policy
 resource "aws_iam_policy" "karpenter_controller_policy" {
-  name = "${var.cluster_name}-karpenter-controller-policy"
+  name = "am-${var.cluster_name}-karpenter-controller-policy"
   policy = jsonencode({
     Version = "2012-10-17"
     Statement = [
@@ -242,7 +242,7 @@ resource "aws_iam_role_policy_attachment" "karpenter_controller_policy" {
 
 # Karpenter Node IAM Role
 resource "aws_iam_role" "karpenter_node_role" {
-  name = "${var.cluster_name}-karpenter-node-role"
+  name = "am-${var.cluster_name}-karpenter-node-role"
 
   assume_role_policy = jsonencode({
     Version = "2012-10-17"
@@ -283,7 +283,7 @@ resource "aws_iam_role_policy_attachment" "karpenter_ssm_managed_instance_core" 
 
 # Karpenter Node Instance Profile
 resource "aws_iam_instance_profile" "karpenter_node" {
-  name = "${var.cluster_name}-karpenter-node-instance-profile"
+  name = "am-${var.cluster_name}-karpenter-node-instance-profile"
   role = aws_iam_role.karpenter_node_role.name
 
   tags = var.tags

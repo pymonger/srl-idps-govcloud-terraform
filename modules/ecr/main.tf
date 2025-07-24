@@ -230,6 +230,90 @@ resource "aws_ecr_repository" "eks_pause" {
   })
 }
 
+# ECR Repository for AWS EBS CSI Driver
+resource "aws_ecr_repository" "aws_ebs_csi_driver" {
+  name                 = "aws-ebs-csi-driver"
+  image_tag_mutability = "MUTABLE"
+
+  image_scanning_configuration {
+    scan_on_push = true
+  }
+
+  tags = merge(var.tags, {
+    Name = "${var.cluster_name}-aws-ebs-csi-driver-ecr"
+  })
+}
+
+# ECR Repository for External Provisioner
+resource "aws_ecr_repository" "external_provisioner" {
+  name                 = "external-provisioner"
+  image_tag_mutability = "MUTABLE"
+
+  image_scanning_configuration {
+    scan_on_push = true
+  }
+
+  tags = merge(var.tags, {
+    Name = "${var.cluster_name}-external-provisioner-ecr"
+  })
+}
+
+# ECR Repository for External Resizer
+resource "aws_ecr_repository" "external_resizer" {
+  name                 = "external-resizer"
+  image_tag_mutability = "MUTABLE"
+
+  image_scanning_configuration {
+    scan_on_push = true
+  }
+
+  tags = merge(var.tags, {
+    Name = "${var.cluster_name}-external-resizer-ecr"
+  })
+}
+
+# ECR Repository for External Attacher
+resource "aws_ecr_repository" "external_attacher" {
+  name                 = "external-attacher"
+  image_tag_mutability = "MUTABLE"
+
+  image_scanning_configuration {
+    scan_on_push = true
+  }
+
+  tags = merge(var.tags, {
+    Name = "${var.cluster_name}-external-attacher-ecr"
+  })
+}
+
+# ECR Repository for Liveness Probe
+resource "aws_ecr_repository" "livenessprobe" {
+  name                 = "livenessprobe"
+  image_tag_mutability = "MUTABLE"
+
+  image_scanning_configuration {
+    scan_on_push = true
+  }
+
+  tags = merge(var.tags, {
+    Name = "${var.cluster_name}-livenessprobe-ecr"
+  })
+}
+
+# ECR Repository for Node Driver Registrar
+resource "aws_ecr_repository" "node_driver_registrar" {
+  name                 = "node-driver-registrar"
+  image_tag_mutability = "MUTABLE"
+
+  image_scanning_configuration {
+    scan_on_push = true
+  }
+
+  tags = merge(var.tags, {
+    Name = "${var.cluster_name}-node-driver-registrar-ecr"
+  })
+}
+
 # ECR Lifecycle Policy for cleanup
 resource "aws_ecr_lifecycle_policy" "airflow" {
   repository = aws_ecr_repository.airflow.name

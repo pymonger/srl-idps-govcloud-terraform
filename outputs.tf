@@ -136,6 +136,36 @@ output "eks_pause_repository_url" {
   value       = module.ecr.eks_pause_repository_url
 }
 
+output "aws_ebs_csi_driver_repository_url" {
+  description = "AWS EBS CSI Driver ECR repository URL"
+  value       = module.ecr.aws_ebs_csi_driver_repository_url
+}
+
+output "external_provisioner_repository_url" {
+  description = "External Provisioner ECR repository URL"
+  value       = module.ecr.external_provisioner_repository_url
+}
+
+output "external_resizer_repository_url" {
+  description = "External Resizer ECR repository URL"
+  value       = module.ecr.external_resizer_repository_url
+}
+
+output "external_attacher_repository_url" {
+  description = "External Attacher ECR repository URL"
+  value       = module.ecr.external_attacher_repository_url
+}
+
+output "livenessprobe_repository_url" {
+  description = "Liveness Probe ECR repository URL"
+  value       = module.ecr.livenessprobe_repository_url
+}
+
+output "node_driver_registrar_repository_url" {
+  description = "Node Driver Registrar ECR repository URL"
+  value       = module.ecr.node_driver_registrar_repository_url
+}
+
 # IAM Outputs
 output "karpenter_controller_role_arn" {
   description = "Karpenter controller IAM role ARN"

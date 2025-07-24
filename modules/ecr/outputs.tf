@@ -82,3 +82,33 @@ output "eks_pause_repository_url" {
   description = "EKS pause image ECR repository URL"
   value       = aws_ecr_repository.eks_pause.repository_url
 }
+
+output "aws_ebs_csi_driver_repository_url" {
+  description = "AWS EBS CSI Driver ECR repository URL"
+  value       = aws_ecr_repository.aws_ebs_csi_driver.repository_url
+}
+
+output "external_provisioner_repository_url" {
+  description = "External Provisioner ECR repository URL"
+  value       = aws_ecr_repository.external_provisioner.repository_url
+}
+
+output "external_resizer_repository_url" {
+  description = "External Resizer ECR repository URL"
+  value       = aws_ecr_repository.external_resizer.repository_url
+}
+
+output "external_attacher_repository_url" {
+  description = "External Attacher ECR repository URL"
+  value       = aws_ecr_repository.external_attacher.repository_url
+}
+
+output "livenessprobe_repository_url" {
+  description = "Liveness Probe ECR repository URL"
+  value       = aws_ecr_repository.livenessprobe.repository_url
+}
+
+output "node_driver_registrar_repository_url" {
+  description = "Node Driver Registrar ECR repository URL"
+  value       = aws_ecr_repository.node_driver_registrar.repository_url
+}

@@ -344,6 +344,7 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 | <a name="output_airflow_release_name"></a> [airflow\_release\_name](#output\_airflow\_release\_name) | Airflow Helm release name |
 | <a name="output_airflow_repository_url"></a> [airflow\_repository\_url](#output\_airflow\_repository\_url) | Airflow ECR repository URL |
 | <a name="output_alpine_repository_url"></a> [alpine\_repository\_url](#output\_alpine\_repository\_url) | Alpine base image ECR repository URL |
+| <a name="output_aws_ebs_csi_driver_repository_url"></a> [aws\_ebs\_csi\_driver\_repository\_url](#output\_aws\_ebs\_csi\_driver\_repository\_url) | AWS EBS CSI Driver ECR repository URL |
 | <a name="output_busybox_repository_url"></a> [busybox\_repository\_url](#output\_busybox\_repository\_url) | Busybox base image ECR repository URL |
 | <a name="output_cluster_arn"></a> [cluster\_arn](#output\_cluster\_arn) | EKS cluster ARN |
 | <a name="output_cluster_certificate_authority_data"></a> [cluster\_certificate\_authority\_data](#output\_cluster\_certificate\_authority\_data) | EKS cluster certificate authority data |
@@ -356,6 +357,9 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 | <a name="output_efs_file_system_id"></a> [efs\_file\_system\_id](#output\_efs\_file\_system\_id) | EFS file system ID |
 | <a name="output_efs_security_group_id"></a> [efs\_security\_group\_id](#output\_efs\_security\_group\_id) | EFS security group ID |
 | <a name="output_eks_pause_repository_url"></a> [eks\_pause\_repository\_url](#output\_eks\_pause\_repository\_url) | EKS pause image ECR repository URL |
+| <a name="output_external_attacher_repository_url"></a> [external\_attacher\_repository\_url](#output\_external\_attacher\_repository\_url) | External Attacher ECR repository URL |
+| <a name="output_external_provisioner_repository_url"></a> [external\_provisioner\_repository\_url](#output\_external\_provisioner\_repository\_url) | External Provisioner ECR repository URL |
+| <a name="output_external_resizer_repository_url"></a> [external\_resizer\_repository\_url](#output\_external\_resizer\_repository\_url) | External Resizer ECR repository URL |
 | <a name="output_karpenter_controller_repository_url"></a> [karpenter\_controller\_repository\_url](#output\_karpenter\_controller\_repository\_url) | Karpenter controller ECR repository URL |
 | <a name="output_karpenter_controller_role_arn"></a> [karpenter\_controller\_role\_arn](#output\_karpenter\_controller\_role\_arn) | Karpenter controller IAM role ARN |
 | <a name="output_karpenter_node_instance_profile_name"></a> [karpenter\_node\_instance\_profile\_name](#output\_karpenter\_node\_instance\_profile\_name) | Karpenter node instance profile name |
@@ -364,7 +368,9 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 | <a name="output_karpenter_release_name"></a> [karpenter\_release\_name](#output\_karpenter\_release\_name) | Karpenter Helm release name |
 | <a name="output_keda_operator_repository_url"></a> [keda\_operator\_repository\_url](#output\_keda\_operator\_repository\_url) | KEDA operator ECR repository URL |
 | <a name="output_keda_release_name"></a> [keda\_release\_name](#output\_keda\_release\_name) | KEDA Helm release name |
+| <a name="output_livenessprobe_repository_url"></a> [livenessprobe\_repository\_url](#output\_livenessprobe\_repository\_url) | Liveness Probe ECR repository URL |
 | <a name="output_nginx_repository_url"></a> [nginx\_repository\_url](#output\_nginx\_repository\_url) | Nginx base image ECR repository URL |
+| <a name="output_node_driver_registrar_repository_url"></a> [node\_driver\_registrar\_repository\_url](#output\_node\_driver\_registrar\_repository\_url) | Node Driver Registrar ECR repository URL |
 | <a name="output_node_group_arn"></a> [node\_group\_arn](#output\_node\_group\_arn) | EKS node group ARN |
 | <a name="output_node_group_id"></a> [node\_group\_id](#output\_node\_group\_id) | EKS node group ID |
 | <a name="output_node_security_group_id"></a> [node\_security\_group\_id](#output\_node\_security\_group\_id) | EKS node security group ID |

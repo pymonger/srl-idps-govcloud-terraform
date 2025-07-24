@@ -71,5 +71,13 @@ mirror_image "unity/rdrgen:develop" "unity/rdrgen" "develop"
 mirror_image "unity/edrgen:develop" "unity/edrgen" "develop"
 mirror_image "unity/vic2png:develop" "unity/vic2png" "develop"
 
+# AWS EBS CSI Driver components
+mirror_image "public.ecr.aws/ebs-csi-driver/aws-ebs-csi-driver:v2.28.0" "aws-ebs-csi-driver" "v2.28.0"
+mirror_image "public.ecr.aws/ebs-csi-driver/external-provisioner:v4.1.0" "external-provisioner" "v4.1.0"
+mirror_image "public.ecr.aws/ebs-csi-driver/external-resizer:v1.10.0" "external-resizer" "v1.10.0"
+mirror_image "public.ecr.aws/ebs-csi-driver/external-attacher:v4.8.0" "external-attacher" "v4.8.0"
+mirror_image "public.ecr.aws/ebs-csi-driver/livenessprobe:v2.12.0" "livenessprobe" "v2.12.0"
+mirror_image "public.ecr.aws/ebs-csi-driver/node-driver-registrar:v2.12.0" "node-driver-registrar" "v2.12.0"
+
 echo "All images mirrored successfully!"
 echo "You can now build and push your custom Airflow image using: ./scripts/build-airflow-image.sh"

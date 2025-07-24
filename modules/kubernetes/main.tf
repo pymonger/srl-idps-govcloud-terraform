@@ -366,7 +366,7 @@ resource "helm_release" "airflow" {
           {
             name = "workers-volume"
             persistentVolumeClaim = {
-              claimName = "shared-task-data-volume"
+              claimName = "airflow-kpo"
             }
           }
         ]

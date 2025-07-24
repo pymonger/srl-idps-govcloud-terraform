@@ -13,6 +13,11 @@ variable "karpenter_controller_role_arn" {
   type        = string
 }
 
+variable "karpenter_node_instance_profile_name" {
+  description = "Karpenter node instance profile name"
+  type        = string
+}
+
 variable "tags" {
   description = "Tags to apply to all resources"
   type        = map(string)

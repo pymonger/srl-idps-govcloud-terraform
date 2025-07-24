@@ -174,6 +174,20 @@ resource "aws_ecr_repository" "nginx" {
   })
 }
 
+# ECR Repository for EKS pause image (required for Karpenter nodes)
+resource "aws_ecr_repository" "eks_pause" {
+  name                 = "eks/pause"
+  image_tag_mutability = "MUTABLE"
+
+  image_scanning_configuration {
+    scan_on_push = true
+  }
+
+  tags = merge(var.tags, {
+    Name = "${var.cluster_name}-eks-pause-ecr"
+  })
+}
+
 # ECR Lifecycle Policy for cleanup
 resource "aws_ecr_lifecycle_policy" "airflow" {
   repository = aws_ecr_repository.airflow.name

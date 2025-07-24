@@ -153,6 +153,109 @@ resource "helm_release" "karpenter" {
   depends_on = [var.cluster_endpoint]
 }
 
+# Karpenter NodeClass - Defines AWS configuration for node provisioning
+resource "kubernetes_manifest" "karpenter_nodeclass" {
+  manifest = {
+    apiVersion = "karpenter.k8s.aws/v1beta1"
+    kind       = "NodeClass"
+    metadata = {
+      name = "${var.cluster_name}-nodeclass"
+    }
+    spec = {
+      amiFamily       = "AL2023"
+      role            = "${var.cluster_name}-karpenter-node-role"
+      instanceProfile = var.karpenter_node_instance_profile_name
+      subnetSelectorTerms = [
+        {
+          tags = {
+            "karpenter.sh/discovery" = var.cluster_name
+          }
+        }
+      ]
+      securityGroupSelectorTerms = [
+        {
+          tags = {
+            "karpenter.sh/discovery" = var.cluster_name
+          }
+        }
+      ]
+      tags = {
+        "karpenter.sh/discovery" = var.cluster_name
+        "Environment"            = "production"
+        "ManagedBy"              = "karpenter"
+      }
+      userData = base64encode(<<-EOF
+        #!/bin/bash
+        /etc/eks/bootstrap.sh ${var.cluster_name} --kubelet-extra-args '--node-labels=karpenter.sh/capacity-type={{CapacityType}} --node-labels=karpenter.k8s.aws/instance-category={{.Labels.karpenter.k8s.aws/instance-category}} --node-labels=karpenter.k8s.aws/instance-generation={{.Labels.karpenter.k8s.aws/instance-generation}} --node-labels=karpenter.k8s.aws/instance-size={{.Labels.karpenter.k8s.aws/instance-size}} --node-labels=karpenter.k8s.aws/instance-cpu={{.Labels.karpenter.k8s.aws/instance-cpu}} --node-labels=karpenter.k8s.aws/instance-memory={{.Labels.karpenter.k8s.aws/instance-memory}} --node-labels=karpenter.k8s.aws/instance-pods={{.Labels.karpenter.k8s.aws/instance-pods}} --node-labels=node.kubernetes.io/instance-type={{.Labels.node.kubernetes.io/instance-type}} --node-labels=topology.kubernetes.io/zone={{.Labels.topology.kubernetes.io/zone}} --node-labels=topology.kubernetes.io/region={{.Labels.topology.kubernetes.io/region}} --node-labels=karpenter.sh/provisioner-name={{.Labels.karpenter.sh/provisioner-name}} --node-labels=karpenter.sh/managed=true'
+      EOF
+      )
+    }
+  }
+
+  depends_on = [helm_release.karpenter]
+}
+
+# Karpenter NodePool - Defines node requirements and constraints
+resource "kubernetes_manifest" "karpenter_nodepool" {
+  manifest = {
+    apiVersion = "karpenter.sh/v1beta1"
+    kind       = "NodePool"
+    metadata = {
+      name = "${var.cluster_name}-nodepool"
+    }
+    spec = {
+      disruption = {
+        consolidationPolicy = "WhenEmpty"
+        consolidationTTL    = "30s"
+      }
+      nodeClassRef = {
+        name = "${var.cluster_name}-nodeclass"
+      }
+      template = {
+        metadata = {
+          labels = {
+            "karpenter.sh/capacity-type" = "spot"
+            "node.kubernetes.io/role"    = "worker"
+          }
+        }
+        spec = {
+          requirements = [
+            {
+              key    = "kubernetes.io/arch"
+              values = ["amd64"]
+            },
+            {
+              key    = "kubernetes.io/os"
+              values = ["linux"]
+            },
+            {
+              key    = "karpenter.sh/capacity-type"
+              values = ["spot", "on-demand"]
+            },
+            {
+              key    = "node.kubernetes.io/instance-type"
+              values = ["c6i.large", "c6i.xlarge", "c6i.2xlarge"]
+            },
+            {
+              key    = "topology.kubernetes.io/zone"
+              values = ["us-gov-west-1a", "us-gov-west-1b", "us-gov-west-1c"]
+            }
+          ]
+          startupTaints = [
+            {
+              key    = "karpenter.sh/initializing"
+              value  = "true"
+              effect = "NoSchedule"
+            }
+          ]
+        }
+      }
+    }
+  }
+
+  depends_on = [kubernetes_manifest.karpenter_nodeclass]
+}
+
 # Airflow Helm Release
 resource "helm_release" "airflow" {
   name             = "airflow"
@@ -160,7 +263,7 @@ resource "helm_release" "airflow" {
   chart            = "airflow"
   namespace        = "sps"
   create_namespace = true
-  version          = "1.17.0"
+  version          = "1.12.0"
 
   values = [
     yamlencode({
@@ -449,7 +552,7 @@ resource "helm_release" "airflow" {
     })
   ]
 
-  depends_on = [var.cluster_endpoint, helm_release.keda]
+  depends_on = [helm_release.karpenter]
 }
 
 # Data sources

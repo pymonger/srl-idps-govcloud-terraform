@@ -102,8 +102,9 @@ module "eks" {
 module "kubernetes" {
   source = "./modules/kubernetes"
 
-  cluster_name                  = var.cluster_name
-  cluster_endpoint              = module.eks.cluster_endpoint
-  karpenter_controller_role_arn = module.iam.karpenter_controller_role_arn
-  tags                          = var.tags
+  cluster_name                         = var.cluster_name
+  cluster_endpoint                     = module.eks.cluster_endpoint
+  karpenter_controller_role_arn        = module.iam.karpenter_controller_role_arn
+  karpenter_node_instance_profile_name = module.iam.karpenter_node_instance_profile_name
+  tags                                 = var.tags
 }

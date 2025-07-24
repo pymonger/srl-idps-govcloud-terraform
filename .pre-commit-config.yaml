@@ -1,0 +1,187 @@
+---
+repos:
+  # Terraform formatting and validation
+  - repo: https://github.com/antonbabenko/pre-commit-terraform
+    rev: v1.88.0
+    hooks:
+      # Terraform formatting
+      - id: terraform_fmt
+        args:
+          - --args=-no-color
+          - --args=-diff
+          - --args=-write=true
+
+      # Terraform validation
+      - id: terraform_validate
+        args:
+          - --args=-no-color
+
+      # Terraform docs
+      - id: terraform_docs
+        args:
+          - --hook-config=--path-to-file=README.md
+          - --hook-config=--add-to-existing-file=true
+          - --hook-config=--create-file-if-not-exist=true
+
+      # Terraform tflint (commented out - requires provider configs in modules)
+      # - id: terraform_tflint
+      #   args:
+      #     - --args=--format=compact
+      #     - --args=--minimum-failure-severity=warning
+
+      # Terraform checkov (commented out - requires checkov installation)
+      # - id: terraform_checkov
+      #   args:
+      #     - --args=--framework=terraform
+      #     - --args=--output=cli
+      #     - --args=--output-format=json
+      #     - --args=--quiet
+      #     - --args=--skip-path=modules/ecr
+      #     - --args=--skip-check=CKV_AWS_130
+      #     - --args=--skip-check=CKV_AWS_126
+
+      # Terraform tfsec
+      # - id: terraform_tfsec
+      #   args:
+      #     - --args=--format=json
+      #     - --args=--out=results.json
+      #     - --args=--no-color
+
+# Terraform plan (commented out for now - requires terraform init)
+      # - id: terraform_plan
+      #   args:
+      #     - --args=-out=tfplan
+      #     - --args=-detailed-exitcode
+      #     - --args=-lock=false
+      #     - --args=-refresh=false
+
+  # General code quality
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.5.0
+    hooks:
+      # File formatting
+      - id: trailing-whitespace
+      - id: end-of-file-fixer
+      - id: check-yaml
+      - id: check-json
+      - id: check-added-large-files
+        args: ['--maxkb=1000']
+
+      # Security checks
+      - id: detect-private-key
+      - id: detect-aws-credentials
+
+      # Documentation
+      - id: check-merge-conflict
+      - id: check-case-conflict
+
+      # Shell scripts (commented out - requires shellcheck setup)
+      # - id: shellcheck
+      #   args: ['--severity=warning']
+
+  # YAML/JSON linting (commented out - has indentation issues)
+  # - repo: https://github.com/adrienverge/yamllint
+  #   rev: v1.33.0
+  #   hooks:
+  #     - id: yamllint
+  #       args:
+  #         - --format=parsable
+  #         - --strict
+
+  # Markdown linting (commented out - requires markdownlint setup)
+  # - repo: https://github.com/igorshubovych/markdownlint-cli
+  #   rev: v0.38.0
+  #   hooks:
+  #     - id: markdownlint
+  #       args:
+  #         - --fix
+  #         - --config=.markdownlint.yaml
+
+  # Security scanning (commented out - requires detect-secrets setup)
+  # - repo: https://github.com/Yelp/detect-secrets
+  #   rev: v1.4.0
+  #   hooks:
+  #     - id: detect-secrets
+  #       args: ['--baseline', '.secrets.baseline']
+  #       exclude: |
+  #         (?x)^(
+  #             \.git/|
+  #             \.terraform/|
+  #             \.pre-commit-config\.yaml|
+  #             \.secrets\.baseline|
+  #             terraform\.tfstate.*|
+  #             \.env.*|
+  #             scripts/.*\.sh
+  #         )$
+
+  # Git hooks (commented out - requires prettier setup)
+  # - repo: https://github.com/pre-commit/mirrors-prettier
+  #   rev: v3.1.0
+  #   hooks:
+  #     - id: prettier
+  #       types_or: [json, yaml, markdown]
+  #       args:
+  #         - --write
+  #         - --prose-wrap=always
+
+  # Commit message validation (commented out - requires commitlint setup)
+  # - repo: https://github.com/alessandrojcm/commitlint-pre-commit-hook
+  #   rev: v9.5.4
+  #   hooks:
+  #     - id: commitlint
+  #       stages: [commit-msg]
+  #       args: ['--config', '.commitlintrc.json']
+
+  # Terraform cost estimation (commented out - requires infracost setup)
+  # - repo: https://github.com/infracost/infracost
+  #   rev: v0.10.35
+  #   hooks:
+  #     - id: infracost_breakdown
+  #       args:
+  #         - --format=json
+  #         - --out-file=infracost.json
+  #         - --show-skipped
+  #       verbose: true
+
+  # Terraform security scanning (commented out - requires checkov setup)
+  # - repo: https://github.com/bridgecrewio/checkov
+  #   rev: 3.1.0
+  #   hooks:
+  #     - id: checkov
+  #       args:
+  #         - --framework=terraform
+  #         - --output=cli
+  #         - --output-format=json
+  #         - --quiet
+  #         - --skip-path=modules/ecr
+  #         - --skip-check=CKV_AWS_130
+  #         - --skip-check=CKV_AWS_126
+  #       verbose: true
+
+  # Terraform compliance (commented out - requires terraform-compliance setup)
+  # - repo: https://github.com/terraform-compliance/cli
+  #   rev: 1.3.0
+  #   hooks:
+  #     - id: terraform-compliance
+  #       args:
+  #         - --features
+  #         - .terraform-compliance
+  #         - --planfile
+  #         - tfplan
+  #       stages: [manual]
+
+  # Terraform docs (commented out - requires terraform-docs setup)
+  # - repo: https://github.com/terraform-docs/terraform-docs
+  #   rev: v0.16.0
+  #   hooks:
+  #     - id: terraform_docs
+  #       args:
+  #         - --hook-config=--path-to-file=README.md
+  #         - --hook-config=--add-to-existing-file=true
+  #         - --hook-config=--create-file-if-not-exist=true
+  #         - --hook-config=--output-file=README.md
+  #         - --hook-config=--output-mode=replace
+  #         - --hook-config=--sort-by-required
+  #         - --hook-config=--sort-inputs-by-type
+  #         - --hook-config=--hide=providers
+  #         - --hook-config=--hide=requirements

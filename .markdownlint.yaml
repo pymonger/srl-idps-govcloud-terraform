@@ -1,0 +1,68 @@
+---
+# Markdown linting configuration
+default: true
+
+# Line length
+MD013:
+  line_length: 120
+  code_blocks: false
+  tables: false
+
+# No hard tabs
+MD010: false
+
+# No trailing spaces
+MD009: false
+
+# No multiple spaces
+MD018: false
+
+# No multiple headers with the same content
+MD024:
+  siblings_only: true
+
+# No trailing punctuation in headers
+MD026:
+  punctuation: ".,;:!"
+
+# List item indentation
+MD007:
+  indent: 2
+
+# Unordered list style
+MD004:
+  style: "asterisk"
+
+# Ordered list item prefix
+MD029:
+  style: "ordered"
+
+# List marker style
+MD030:
+  ul_style: "asterisk"
+  ol_style: "ordered"
+
+# No blank lines inside code blocks
+MD031: false
+
+# No blank lines around fenced code blocks
+MD032: false
+
+# No blank lines around lists
+MD033: false
+
+# No blank lines around headers
+MD022: false
+
+# No multiple blank lines
+MD012:
+  maximum: 2
+
+# No emphasis used for headers
+MD036: false
+
+# No code blocks without a language specified
+MD040: false
+
+# No bare URLs
+MD034: false

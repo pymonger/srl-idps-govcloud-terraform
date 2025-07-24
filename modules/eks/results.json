@@ -1,0 +1,144 @@
+{
+	"results": [
+		{
+			"rule_id": "AVD-AWS-0124",
+			"long_id": "aws-ec2-add-description-to-security-group-rule",
+			"rule_description": "Missing description for security group rule.",
+			"rule_provider": "aws",
+			"rule_service": "ec2",
+			"impact": "Descriptions provide context for the firewall rule reasons",
+			"resolution": "Add descriptions for all security groups rules",
+			"links": [
+				"https://aquasecurity.github.io/tfsec/v1.28.14/checks/aws/ec2/add-description-to-security-group-rule/",
+				"https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/security_group",
+				"https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/security_group_rule"
+			],
+			"description": "Security group rule does not have a description.",
+			"severity": "LOW",
+			"warning": false,
+			"status": 0,
+			"resource": "aws_security_group.eks_cluster_sg",
+			"location": {
+				"filename": "/Users/gmanipon/dev/srl-idps-govcloud-terraform/modules/eks/main.tf",
+				"start_line": 7,
+				"end_line": 12
+			}
+		},
+		{
+			"rule_id": "AVD-AWS-0124",
+			"long_id": "aws-ec2-add-description-to-security-group-rule",
+			"rule_description": "Missing description for security group rule.",
+			"rule_provider": "aws",
+			"rule_service": "ec2",
+			"impact": "Descriptions provide context for the firewall rule reasons",
+			"resolution": "Add descriptions for all security groups rules",
+			"links": [
+				"https://aquasecurity.github.io/tfsec/v1.28.14/checks/aws/ec2/add-description-to-security-group-rule/",
+				"https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/security_group",
+				"https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/security_group_rule"
+			],
+			"description": "Security group rule does not have a description.",
+			"severity": "LOW",
+			"warning": false,
+			"status": 0,
+			"resource": "aws_security_group.eks_nodes_sg",
+			"location": {
+				"filename": "/Users/gmanipon/dev/srl-idps-govcloud-terraform/modules/eks/main.tf",
+				"start_line": 24,
+				"end_line": 29
+			}
+		},
+		{
+			"rule_id": "AVD-AWS-0104",
+			"long_id": "aws-ec2-no-public-egress-sgr",
+			"rule_description": "An egress security group rule allows traffic to /0.",
+			"rule_provider": "aws",
+			"rule_service": "ec2",
+			"impact": "Your port is egressing data to the internet",
+			"resolution": "Set a more restrictive cidr range",
+			"links": [
+				"https://aquasecurity.github.io/tfsec/v1.28.14/checks/aws/ec2/no-public-egress-sgr/",
+				"https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/security_group"
+			],
+			"description": "Security group rule allows egress to multiple public internet addresses.",
+			"severity": "CRITICAL",
+			"warning": false,
+			"status": 0,
+			"resource": "aws_security_group.eks_nodes_sg",
+			"location": {
+				"filename": "/Users/gmanipon/dev/srl-idps-govcloud-terraform/modules/eks/main.tf",
+				"start_line": 28,
+				"end_line": 28
+			}
+		},
+		{
+			"rule_id": "AVD-AWS-0104",
+			"long_id": "aws-ec2-no-public-egress-sgr",
+			"rule_description": "An egress security group rule allows traffic to /0.",
+			"rule_provider": "aws",
+			"rule_service": "ec2",
+			"impact": "Your port is egressing data to the internet",
+			"resolution": "Set a more restrictive cidr range",
+			"links": [
+				"https://aquasecurity.github.io/tfsec/v1.28.14/checks/aws/ec2/no-public-egress-sgr/",
+				"https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/security_group"
+			],
+			"description": "Security group rule allows egress to multiple public internet addresses.",
+			"severity": "CRITICAL",
+			"warning": false,
+			"status": 0,
+			"resource": "aws_security_group.eks_cluster_sg",
+			"location": {
+				"filename": "/Users/gmanipon/dev/srl-idps-govcloud-terraform/modules/eks/main.tf",
+				"start_line": 11,
+				"end_line": 11
+			}
+		},
+		{
+			"rule_id": "AVD-AWS-0039",
+			"long_id": "aws-eks-encrypt-secrets",
+			"rule_description": "EKS should have the encryption of secrets enabled",
+			"rule_provider": "aws",
+			"rule_service": "eks",
+			"impact": "EKS secrets could be read if compromised",
+			"resolution": "Enable encryption of EKS secrets",
+			"links": [
+				"https://aquasecurity.github.io/tfsec/v1.28.14/checks/aws/eks/encrypt-secrets/",
+				"https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/eks_cluster#encryption_config"
+			],
+			"description": "Cluster does not have secret encryption enabled.",
+			"severity": "HIGH",
+			"warning": false,
+			"status": 0,
+			"resource": "aws_eks_cluster.main",
+			"location": {
+				"filename": "/Users/gmanipon/dev/srl-idps-govcloud-terraform/modules/eks/main.tf",
+				"start_line": 69,
+				"end_line": 94
+			}
+		},
+		{
+			"rule_id": "AVD-AWS-0040",
+			"long_id": "aws-eks-no-public-cluster-access",
+			"rule_description": "EKS Clusters should have the public access disabled",
+			"rule_provider": "aws",
+			"rule_service": "eks",
+			"impact": "EKS can be access from the internet",
+			"resolution": "Don't enable public access to EKS Clusters",
+			"links": [
+				"https://aquasecurity.github.io/tfsec/v1.28.14/checks/aws/eks/no-public-cluster-access/",
+				"https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/eks_cluster#endpoint_public_access"
+			],
+			"description": "Public cluster access is enabled.",
+			"severity": "CRITICAL",
+			"warning": false,
+			"status": 0,
+			"resource": "aws_eks_cluster.main",
+			"location": {
+				"filename": "/Users/gmanipon/dev/srl-idps-govcloud-terraform/modules/eks/main.tf",
+				"start_line": 77,
+				"end_line": 77
+			}
+		}
+	]
+}

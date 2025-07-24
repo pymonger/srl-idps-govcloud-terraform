@@ -1,0 +1,144 @@
+---
+# Terraform Compliance Configuration
+# This file defines compliance rules for the Terraform infrastructure
+
+# Security Rules
+security:
+  # EKS Cluster Security
+  - name: "EKS Cluster Security"
+    description: "Ensure EKS cluster has proper security configurations"
+    rules:
+      - name: "EKS Cluster Encryption"
+        description: "EKS cluster should have encryption enabled"
+        resource: "aws_eks_cluster"
+        property: "encryption_config"
+        condition: "should not be empty"
+
+      - name: "EKS Cluster Logging"
+        description: "EKS cluster should have logging enabled"
+        resource: "aws_eks_cluster"
+        property: "enabled_cluster_log_types"
+        condition: "should contain api"
+
+      - name: "EKS Cluster Version"
+        description: "EKS cluster should use supported version"
+        resource: "aws_eks_cluster"
+        property: "version"
+        condition: "should be greater than 1.24"
+
+  # VPC Security
+  - name: "VPC Security"
+    description: "Ensure VPC has proper security configurations"
+    rules:
+      - name: "VPC Flow Logs"
+        description: "VPC should have flow logs enabled"
+        resource: "aws_flow_log"
+        condition: "should exist"
+
+      - name: "VPC CIDR Block"
+        description: "VPC should use private CIDR blocks"
+        resource: "aws_vpc"
+        property: "cidr_block"
+        condition: >-
+          should match /^(10\.|172\.(1[6-9]|2[0-9]|3[01])\.|192\.168\.)/
+
+  # IAM Security
+  - name: "IAM Security"
+    description: "Ensure IAM resources follow security best practices"
+    rules:
+      - name: "IAM Role Policies"
+        description: "IAM roles should have least privilege policies"
+        resource: "aws_iam_role_policy"
+        condition: "should exist"
+
+      - name: "IAM Role Names"
+        description: "IAM role names should follow naming convention"
+        resource: "aws_iam_role"
+        property: "name"
+        condition: "should match /^[a-zA-Z0-9_-]+$/"
+
+  # EFS Security
+  - name: "EFS Security"
+    description: "Ensure EFS has proper security configurations"
+    rules:
+      - name: "EFS Encryption"
+        description: "EFS should have encryption enabled"
+        resource: "aws_efs_file_system"
+        property: "encrypted"
+        condition: "should be true"
+
+      - name: "EFS Security Groups"
+        description: "EFS should have security groups configured"
+        resource: "aws_efs_mount_target"
+        condition: "should exist"
+
+  # SQS Security
+  - name: "SQS Security"
+    description: "Ensure SQS queues have proper security configurations"
+    rules:
+      - name: "SQS Encryption"
+        description: "SQS queues should have encryption enabled"
+        resource: "aws_sqs_queue"
+        property: "kms_master_key_id"
+        condition: "should not be empty"
+
+# Compliance Rules
+compliance:
+  # Tagging Standards
+  - name: "Tagging Standards"
+    description: "Ensure all resources have proper tags"
+    rules:
+      - name: "Required Tags"
+        description: "All resources should have required tags"
+        resource: "*"
+        property: "tags"
+        condition: "should contain Environment"
+
+      - name: "Tag Format"
+        description: "Tags should follow proper format"
+        resource: "*"
+        property: "tags"
+        condition: "should match /^[a-zA-Z0-9_-]+$/"
+
+  # Naming Conventions
+  - name: "Naming Conventions"
+    description: "Ensure resources follow naming conventions"
+    rules:
+      - name: "Resource Names"
+        description: "Resource names should follow naming convention"
+        resource: "*"
+        property: "name"
+        condition: "should match /^[a-z0-9-]+$/"
+
+# Cost Optimization
+cost:
+  - name: "Cost Optimization"
+    description: "Ensure cost-effective resource configurations"
+    rules:
+      - name: "Instance Types"
+        description: "Use cost-effective instance types"
+        resource: "aws_eks_node_group"
+        property: "instance_types"
+        condition: "should not contain t2.micro"
+
+      - name: "Storage Classes"
+        description: "Use appropriate storage classes"
+        resource: "aws_efs_file_system"
+        property: "performance_mode"
+        condition: "should be generalPurpose"
+
+# GovCloud Specific Rules
+govcloud:
+  - name: "GovCloud Compliance"
+    description: "Ensure GovCloud specific requirements are met"
+    rules:
+      - name: "ECR Repositories"
+        description: "All container images should use ECR"
+        resource: "aws_ecr_repository"
+        condition: "should exist"
+
+      - name: "No Public Resources"
+        description: "No resources should be publicly accessible"
+        resource: "*"
+        property: "publicly_accessible"
+        condition: "should be false"

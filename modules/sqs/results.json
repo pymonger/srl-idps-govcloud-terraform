@@ -1,0 +1,50 @@
+{
+	"results": [
+		{
+			"rule_id": "AVD-AWS-0096",
+			"long_id": "aws-sqs-enable-queue-encryption",
+			"rule_description": "Unencrypted SQS queue.",
+			"rule_provider": "aws",
+			"rule_service": "sqs",
+			"impact": "The SQS queue messages could be read if compromised",
+			"resolution": "Turn on SQS Queue encryption",
+			"links": [
+				"https://aquasecurity.github.io/tfsec/v1.28.14/checks/aws/sqs/enable-queue-encryption/",
+				"https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/sqs_queue#server-side-encryption-sse"
+			],
+			"description": "Queue is not encrypted",
+			"severity": "HIGH",
+			"warning": false,
+			"status": 0,
+			"resource": "aws_sqs_queue.karpenter_interruptions_dlq",
+			"location": {
+				"filename": "/Users/gmanipon/dev/srl-idps-govcloud-terraform/modules/sqs/main.tf",
+				"start_line": 26,
+				"end_line": 34
+			}
+		},
+		{
+			"rule_id": "AVD-AWS-0096",
+			"long_id": "aws-sqs-enable-queue-encryption",
+			"rule_description": "Unencrypted SQS queue.",
+			"rule_provider": "aws",
+			"rule_service": "sqs",
+			"impact": "The SQS queue messages could be read if compromised",
+			"resolution": "Turn on SQS Queue encryption",
+			"links": [
+				"https://aquasecurity.github.io/tfsec/v1.28.14/checks/aws/sqs/enable-queue-encryption/",
+				"https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/sqs_queue#server-side-encryption-sse"
+			],
+			"description": "Queue is not encrypted",
+			"severity": "HIGH",
+			"warning": false,
+			"status": 0,
+			"resource": "aws_sqs_queue.karpenter_interruptions",
+			"location": {
+				"filename": "/Users/gmanipon/dev/srl-idps-govcloud-terraform/modules/sqs/main.tf",
+				"start_line": 2,
+				"end_line": 23
+			}
+		}
+	]
+}

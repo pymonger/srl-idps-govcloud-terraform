@@ -106,5 +106,6 @@ module "kubernetes" {
   cluster_endpoint                     = module.eks.cluster_endpoint
   karpenter_controller_role_arn        = module.iam.karpenter_controller_role_arn
   karpenter_node_instance_profile_name = module.iam.karpenter_node_instance_profile_name
+  karpenter_node_role_arn              = module.iam.karpenter_node_role_arn
   tags                                 = var.tags
 }

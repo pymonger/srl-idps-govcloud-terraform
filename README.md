@@ -249,6 +249,21 @@ aws ec2 describe-security-groups --region us-gov-west-1 \
   --filters "Name=tag:karpenter.sh/discovery,Values=your-cluster-name"
 ```
 
+**AWS Auth Configuration:**
+```bash
+# Check if Karpenter node role is in aws-auth
+kubectl get configmap aws-auth -n kube-system -o yaml
+
+# The aws-auth ConfigMap is automatically managed by Terraform
+# If Karpenter nodes can't authenticate, verify the role ARN is correct
+# and the role has the necessary permissions
+```
+
+**Common Karpenter Node Issues:**
+- **Authentication failures**: Check aws-auth ConfigMap configuration
+- **API server connectivity**: Verify security groups and subnet routing
+- **Node not joining**: Check IAM role permissions and instance profile
+
 ## 📚 Additional Resources
 
 - [AWS EKS Documentation](https://docs.aws.amazon.com/eks/)

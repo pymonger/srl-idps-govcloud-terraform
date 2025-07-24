@@ -18,6 +18,12 @@ variable "karpenter_node_instance_profile_name" {
   type        = string
 }
 
+variable "karpenter_node_role_arn" {
+  description = "Karpenter node IAM role ARN"
+  type        = string
+}
+
+
 variable "tags" {
   description = "Tags to apply to all resources"
   type        = map(string)

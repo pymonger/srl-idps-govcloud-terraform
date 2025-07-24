@@ -256,6 +256,42 @@ resource "kubernetes_manifest" "karpenter_nodepool" {
   depends_on = [kubernetes_manifest.karpenter_nodeclass]
 }
 
+# Data source to read existing aws-auth ConfigMap
+data "kubernetes_config_map_v1" "aws_auth" {
+  metadata {
+    name      = "aws-auth"
+    namespace = "kube-system"
+  }
+}
+
+# AWS Auth ConfigMap - Update existing aws-auth to include Karpenter node role
+resource "kubernetes_config_map_v1_data" "aws_auth" {
+  metadata {
+    name      = "aws-auth"
+    namespace = "kube-system"
+  }
+
+  data = {
+    mapRoles = yamlencode(concat(
+      # Parse existing mapRoles from the data source
+      yamldecode(data.kubernetes_config_map_v1.aws_auth.data.mapRoles),
+      # Add Karpenter node role entry
+      [
+        {
+          rolearn  = var.karpenter_node_role_arn
+          username = "system:node:{{EC2PrivateDNSName}}"
+          groups = [
+            "system:bootstrappers",
+            "system:nodes"
+          ]
+        }
+      ]
+    ))
+  }
+
+  depends_on = [data.kubernetes_config_map_v1.aws_auth, kubernetes_manifest.karpenter_nodepool]
+}
+
 # Airflow Helm Release
 resource "helm_release" "airflow" {
   name             = "airflow"

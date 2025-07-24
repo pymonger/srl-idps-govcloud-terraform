@@ -174,6 +174,48 @@ resource "aws_ecr_repository" "nginx" {
   })
 }
 
+# ECR Repository for Unity RDRGEN image
+resource "aws_ecr_repository" "rdrgen" {
+  name                 = "unity/rdrgen"
+  image_tag_mutability = "MUTABLE"
+
+  image_scanning_configuration {
+    scan_on_push = true
+  }
+
+  tags = merge(var.tags, {
+    Name = "${var.cluster_name}-rdrgen-ecr"
+  })
+}
+
+# ECR Repository for Unity EDRGEN image
+resource "aws_ecr_repository" "edrgen" {
+  name                 = "unity/edrgen"
+  image_tag_mutability = "MUTABLE"
+
+  image_scanning_configuration {
+    scan_on_push = true
+  }
+
+  tags = merge(var.tags, {
+    Name = "${var.cluster_name}-edrgen-ecr"
+  })
+}
+
+# ECR Repository for Unity VIC2PNG image
+resource "aws_ecr_repository" "vic2png" {
+  name                 = "unity/vic2png"
+  image_tag_mutability = "MUTABLE"
+
+  image_scanning_configuration {
+    scan_on_push = true
+  }
+
+  tags = merge(var.tags, {
+    Name = "${var.cluster_name}-vic2png-ecr"
+  })
+}
+
 # ECR Repository for EKS pause image (required for Karpenter nodes)
 resource "aws_ecr_repository" "eks_pause" {
   name                 = "eks/pause"

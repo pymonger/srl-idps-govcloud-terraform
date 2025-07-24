@@ -352,8 +352,10 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 | <a name="output_cluster_name"></a> [cluster\_name](#output\_cluster\_name) | EKS cluster name |
 | <a name="output_cluster_oidc_issuer_url"></a> [cluster\_oidc\_issuer\_url](#output\_cluster\_oidc\_issuer\_url) | EKS cluster OIDC issuer URL |
 | <a name="output_cluster_security_group_id"></a> [cluster\_security\_group\_id](#output\_cluster\_security\_group\_id) | EKS cluster security group ID |
+| <a name="output_edrgen_repository_url"></a> [edrgen\_repository\_url](#output\_edrgen\_repository\_url) | Unity EDRGEN ECR repository URL |
 | <a name="output_efs_file_system_id"></a> [efs\_file\_system\_id](#output\_efs\_file\_system\_id) | EFS file system ID |
 | <a name="output_efs_security_group_id"></a> [efs\_security\_group\_id](#output\_efs\_security\_group\_id) | EFS security group ID |
+| <a name="output_eks_pause_repository_url"></a> [eks\_pause\_repository\_url](#output\_eks\_pause\_repository\_url) | EKS pause image ECR repository URL |
 | <a name="output_karpenter_controller_repository_url"></a> [karpenter\_controller\_repository\_url](#output\_karpenter\_controller\_repository\_url) | Karpenter controller ECR repository URL |
 | <a name="output_karpenter_controller_role_arn"></a> [karpenter\_controller\_role\_arn](#output\_karpenter\_controller\_role\_arn) | Karpenter controller IAM role ARN |
 | <a name="output_karpenter_node_instance_profile_name"></a> [karpenter\_node\_instance\_profile\_name](#output\_karpenter\_node\_instance\_profile\_name) | Karpenter node instance profile name |
@@ -370,5 +372,7 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 | <a name="output_oidc_provider_stack_arn"></a> [oidc\_provider\_stack\_arn](#output\_oidc\_provider\_stack\_arn) | CloudFormation stack ARN for OIDC provider |
 | <a name="output_private_subnet_ids"></a> [private\_subnet\_ids](#output\_private\_subnet\_ids) | Private subnet IDs |
 | <a name="output_public_subnet_ids"></a> [public\_subnet\_ids](#output\_public\_subnet\_ids) | Public subnet IDs |
+| <a name="output_rdrgen_repository_url"></a> [rdrgen\_repository\_url](#output\_rdrgen\_repository\_url) | Unity RDRGEN ECR repository URL |
+| <a name="output_vic2png_repository_url"></a> [vic2png\_repository\_url](#output\_vic2png\_repository\_url) | Unity VIC2PNG ECR repository URL |
 | <a name="output_vpc_id"></a> [vpc\_id](#output\_vpc\_id) | VPC ID |
 <!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->

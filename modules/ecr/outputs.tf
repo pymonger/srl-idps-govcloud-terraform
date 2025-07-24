@@ -62,3 +62,23 @@ output "nginx_repository_url" {
   description = "Nginx base image ECR repository URL"
   value       = aws_ecr_repository.nginx.repository_url
 }
+
+output "rdrgen_repository_url" {
+  description = "Unity RDRGEN ECR repository URL"
+  value       = aws_ecr_repository.rdrgen.repository_url
+}
+
+output "edrgen_repository_url" {
+  description = "Unity EDRGEN ECR repository URL"
+  value       = aws_ecr_repository.edrgen.repository_url
+}
+
+output "vic2png_repository_url" {
+  description = "Unity VIC2PNG ECR repository URL"
+  value       = aws_ecr_repository.vic2png.repository_url
+}
+
+output "eks_pause_repository_url" {
+  description = "EKS pause image ECR repository URL"
+  value       = aws_ecr_repository.eks_pause.repository_url
+}

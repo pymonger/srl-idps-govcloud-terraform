@@ -66,5 +66,10 @@ mirror_image "nginx:alpine" "unity/nginx" "alpine"
 # EKS pause image (required for Karpenter nodes)
 mirror_image "public.ecr.aws/eks-distro/kubernetes/pause:3.9" "eks/pause" "3.9"
 
+# Unity custom images
+mirror_image "unity/rdrgen:develop" "unity/rdrgen" "develop"
+mirror_image "unity/edrgen:develop" "unity/edrgen" "develop"
+mirror_image "unity/vic2png:develop" "unity/vic2png" "develop"
+
 echo "All images mirrored successfully!"
 echo "You can now build and push your custom Airflow image using: ./scripts/build-airflow-image.sh"

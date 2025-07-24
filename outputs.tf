@@ -116,6 +116,26 @@ output "nginx_repository_url" {
   value       = module.ecr.nginx_repository_url
 }
 
+output "rdrgen_repository_url" {
+  description = "Unity RDRGEN ECR repository URL"
+  value       = module.ecr.rdrgen_repository_url
+}
+
+output "edrgen_repository_url" {
+  description = "Unity EDRGEN ECR repository URL"
+  value       = module.ecr.edrgen_repository_url
+}
+
+output "vic2png_repository_url" {
+  description = "Unity VIC2PNG ECR repository URL"
+  value       = module.ecr.vic2png_repository_url
+}
+
+output "eks_pause_repository_url" {
+  description = "EKS pause image ECR repository URL"
+  value       = module.ecr.eks_pause_repository_url
+}
+
 # IAM Outputs
 output "karpenter_controller_role_arn" {
   description = "Karpenter controller IAM role ARN"
